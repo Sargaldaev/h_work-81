@@ -15,6 +15,13 @@ linksRouters.post('/', async (req, res) => {
       result += alphabet[randomIndex];
     }
 
+    const unique = await Link.findOne({shortUrl: result});
+
+    if (unique) {
+      return res.sendStatus(400);
+    }
+
+
     const linkCreate: ILinkCreate = {
       url: req.body.url,
       shortUrl: result
