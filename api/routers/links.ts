@@ -7,6 +7,9 @@ const linksRouters = express.Router();
 
 linksRouters.post('/', async (req, res) => {
   try {
+    if (!req.body.url) {
+      return res.status(400).send({'error': 'not Url'});
+    }
     const alphabet = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
     let result = '';
 

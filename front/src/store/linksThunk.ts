@@ -1,12 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axiosApi from '../axiosApi.ts';
 import { ILinkCreate } from '../Features/Form/Form.tsx';
+import { ILink } from './linksSlice.ts';
 
-export const shortLink = createAsyncThunk<void, ILinkCreate>(
+export const shortLink = createAsyncThunk<ILink, ILinkCreate>(
   'link/shortLink',
   async (arg) => {
 
-    await axiosApi.post(`/links`, arg);
+    const {data} = await axiosApi.post(`/links`, arg);
 
+    return data;
   }
 );

@@ -9,12 +9,10 @@ export interface ILink {
 
 interface LinkState {
   link: ILink | null;
-  fetchLoad: boolean;
 }
 
 const initialState: LinkState = {
   link: null,
-  fetchLoad: false,
 };
 
 export const linkSlice = createSlice({
@@ -23,15 +21,9 @@ export const linkSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
 
-    builder.addCase(shortLink.pending, (state) => {
-      state.fetchLoad = true;
-    });
-    builder.addCase(shortLink.fulfilled, (state) => {
-      state.fetchLoad = false;
-      // state.link = action.payload || null;
-    });
-    builder.addCase(shortLink.rejected, (state) => {
-      state.fetchLoad = false;
+
+    builder.addCase(shortLink.fulfilled, (state, action) => {
+      state.link = action.payload || null;
     });
 
   }

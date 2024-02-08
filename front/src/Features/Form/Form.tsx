@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../app/store.ts';
-import { Box, Button, TextField } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../app/store.ts';
+import { Box, Button, Container, Link, TextField, Typography } from '@mui/material';
 import { shortLink } from '../../store/linksThunk.ts';
+import { Send } from '@mui/icons-material';
 
 export interface ILinkCreate {
   url: string;
@@ -10,7 +11,7 @@ export interface ILinkCreate {
 
 const Form = () => {
 
-
+  const {link} = useSelector((state: RootState) => state.link);
   const dispatch = useDispatch<AppDispatch>();
   const [state, setState] = useState<ILinkCreate>({
     url: ''
@@ -24,30 +25,56 @@ const Form = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-    await dispatch(shortLink(state));
+
+    try {
+      if (!state.url) {
+        alert('Введите ссылку');
+      } else {
+        await dispatch(shortLink(state));
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
     <>
 
-      <Box
-        component={'form'}
+      <Container
+        maxWidth="sm"
+        component="form"
         onSubmit={onSubmit}
       >
-
+        <Typography variant="h4" align="center" gutterBottom>
+          URL Shortener
+        </Typography>
         <TextField
           name={'url'}
+          fullWidth
+          variant="outlined"
+          label="Enter the URL"
           value={state.url}
           onChange={onChange}
+          margin="normal"
         />
-
         <Button
-          variant={'contained'}
-          type={'submit'}
+          fullWidth
+          variant="contained"
+          type="submit"
+          color="primary"
+          endIcon={<Send/>}
         >
-          Short Url
+          Shorten
         </Button>
-      </Box>
+        {link && (
+          <Box sx={{marginTop: '20px'}}>
+            <Typography variant="body1">Shortened URL:</Typography>
+            <Link href={`http://localhost:8000/links/${link.shortUrl}`} target="_blank" rel="noopener noreferrer">
+              {`http://localhost:8000/links/${link.shortUrl}`}
+            </Link>
+          </Box>
+        )}
+      </Container>
     </>
   );
 };
